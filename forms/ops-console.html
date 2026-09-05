@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ops Console · Streamlined</title>
+    <style>
+        /* ── reset & fonts ── */
+        :root {
+            --bg-deep: #170032;
+            --bg-panel: #22013f;
+            --card: #2c0555;
+            --violet: #830cde;
+            --violet-lt: #A55AFF;
+            --cyan: #00ffff;
+            --magenta: #dc4ce8;
+            --pink: #ff69b4;
+            --slate: #657383;
+            --mist: #C4C3D0;
+            --text: #DBE2E9;
+            --green: #58e84c;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap');
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Share Tech Mono', 'JetBrains Mono', 'Courier New', monospace;
+            background: radial-gradient(ellipse at top, #2c0555 0%, var(--bg-deep) 55%, #0c0018 100%);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        /* ── sticky console bar ── */
+        .console {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 20;
+            background: linear-gradient(180deg, var(--bg-panel) 0%, #1a0130 100%);
+            border-bottom: 1px solid rgba(165, 90, 255, 0.35);
+            box-shadow: 0 0 0 1px rgba(0, 255, 255, 0.04), 0 4px 24px rgba(131, 12, 222, 0.3);
+            padding: 2px 50px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            height: 52px;
+        }
+        .console-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 10px;
+            color: var(--violet-lt);
+            text-transform: uppercase;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .console-title .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 6px var(--cyan), 0 0 12px var(--cyan);
+            animation: pulse 2.2s infinite;
+            flex-shrink: 0;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.35;
+            }
+        }
+        .zones {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex: 1;
+            overflow-x: auto;
+        }
+        .zone-card {
+            display: flex;
+            align-items: baseline;
+            gap: 7px;
+            background: linear-gradient(160deg, rgba(131, 12, 222, 0.14), rgba(44, 5, 85, 0.35));
+            border: 1px solid rgba(165, 90, 255, 0.25);
+            border-radius: 6px;
+            padding: 4px 20px;
+            white-space: nowrap;
+        }
+        .zone-card.home {
+            border-color: rgba(255, 105, 180, 0.4);
+        }
+        .zone-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 10px;
+            color: var(--mist);
+            text-transform: uppercase;
+        }
+        .zone-card.home .zone-name {
+            color: var(--pink);
+        }
+        .time-24 {
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            color: var(--cyan);
+            text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+        }
+        .time-12 {
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            color: var(--violet-lt);
+        }
+        .time-12 .meridiem {
+            color: var(--magenta);
+        }
+        .eta-block {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-left: 14px;
+            border-left: 1px dashed rgba(165, 90, 255, 0.3);
+            flex-shrink: 0;
+        }
+        .eta-readout {
+            font-size: 14px;
+            min-width: 40px;
+            text-align: center;
+            color: var(--pink);
+            text-shadow: 0 0 6px rgba(255, 105, 180, 0.4);
+        }
+        .eta-readout.zero {
+            color: var(--slate);
+            text-shadow: none;
+        }
+        .eta-arrows {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .eta-btn {
+            width: 22px;
+            height: 15px;
+            border-radius: 3px;
+            border: 1px solid rgba(165, 90, 255, 0.4);
+            background: linear-gradient(160deg, rgba(131, 12, 222, 0.3), rgba(44, 5, 85, 0.5));
+            color: var(--cyan);
+            font-size: 9px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .eta-btn:hover {
+            background: rgba(0, 255, 255, 0.12);
+            border-color: var(--cyan);
+        }
+        .eta-reset {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: var(--slate);
+            background: none;
+            border: 1px solid rgba(101, 115, 131, 0.4);
+            border-radius: 4px;
+            padding: 5px 7px;
+            cursor: pointer;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        .eta-reset:hover {
+            color: var(--mist);
+            border-color: var(--mist);
+        }
+
+        /* ── page body ── */
+        .wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 10px 16px 60px;
+        }
+        .top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 7px;
+            padding-bottom: 7px;
+        }
+        .page-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            letter-spacing: 3px;
+            font-size: 14px;
+            color: var(--violet-lt);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .page-title .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 8px var(--cyan);
+            animation: pulse 2.2s infinite;
+        }
+        .date-tag {
+            font-size: 11px;
+            color: var(--slate);
+            letter-spacing: 1px;
+        }
+        .btn-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .reset-btn {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            color: var(--slate);
+            background: none;
+            border: 1px solid rgba(101, 115, 131, 0.4);
+            border-radius: 5px;
+            padding: 6px 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .reset-btn:hover {
+            color: var(--pink);
+            border-color: var(--pink);
+        }
+
+        /* ── call/email log – side by side ── */
+        .log-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+        .log-group {
+            flex: 1 1 0;
+            min-width: 260px;
+            background: linear-gradient(160deg, rgba(131, 12, 222, 0.10), rgba(44, 5, 85, 0.35));
+            border: 1px solid rgba(165, 90, 255, 0.20);
+            border-radius: 8px;
+            padding: 12px 14px 14px;
+        }
+        .log-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 8px;
+        }
+        .log-grid.two-col {
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .log-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(23, 0, 50, 0.40);
+            border: 1px solid rgba(165, 90, 255, 0.15);
+            border-radius: 6px;
+            padding: 6px 4px 8px;
+            transition: border-color 0.2s;
+        }
+        .log-item:hover {
+            border-color: rgba(165, 90, 255, 0.35);
+        }
+        .log-item.total-item {
+            border-color: rgba(0, 255, 255, 0.25);
+            background: rgba(0, 255, 255, 0.04);
+        }
+        .log-item.total-item .log-label {
+            color: var(--cyan);
+        }
+        .log-label {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: var(--mist);
+            text-transform: uppercase;
+            margin-bottom: 3px;
+            text-align: center;
+        }
+        .log-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+            width: 100%;
+        }
+        .log-val {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--cyan);
+            text-shadow: 0 0 6px rgba(0, 255, 255, 0.30);
+            min-width: 26px;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+        }
+        .log-item.total-item .log-val {
+            color: #7ae0ff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.50);
+            font-size: 20px;
+        }
+        .log-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid rgba(165, 90, 255, 0.35);
+            background: linear-gradient(160deg, rgba(131, 12, 222, 0.25), rgba(44, 5, 85, 0.45));
+            color: var(--cyan);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            line-height: 1;
+            user-select: none;
+        }
+        .log-btn:hover {
+            background: rgba(0, 255, 255, 0.12);
+            border-color: var(--cyan);
+        }
+        .log-btn.minus {
+            color: var(--pink);
+        }
+        .log-btn.minus:hover {
+            background: rgba(255, 105, 180, 0.12);
+            border-color: var(--pink);
+        }
+        .log-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* responsive tweaks for log section */
+        @media (max-width: 700px) {
+            .log-section {
+                flex-direction: column;
+            }
+            .log-group {
+                min-width: unset;
+            }
+            .log-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+            .log-grid.two-col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 400px) {
+            .log-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 4px;
+            }
+            .log-grid.two-col {
+                grid-template-columns: 1fr 1fr;
+            }
+            .log-val {
+                font-size: 16px;
+                min-width: 20px;
+            }
+            .log-btn {
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+            }
+        }
+
+        /* ── panel base (collapsible) ── */
+        .panel {
+            background: linear-gradient(160deg, rgba(131, 12, 222, 0.12), rgba(44, 5, 85, 0.4));
+            border: 1px solid rgba(165, 90, 255, 0.25);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 22px;
+        }
+        .panel-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 13px;
+            color: var(--cyan);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(0, 255, 255, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            gap: 10px;
+        }
+        .panel-title .title-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .panel-count {
+            font-size: 10px;
+            color: var(--slate);
+            letter-spacing: 1px;
+        }
+        .chevron {
+            font-size: 11px;
+            color: var(--violet-lt);
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+            letter-spacing: 0;
+        }
+        .panel.collapsed .chevron {
+            transform: rotate(-90deg);
+        }
+        .panel-body {
+            transition: opacity 0.2s ease;
+        }
+        .panel.collapsed .panel-body {
+            display: none;
+        }
+
+        /* ── checklist panel ── */
+        .checklist-panel {
+            /* inherits .panel styles */
+        }
+        .checklist-panel .item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 6px 2px;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 1px solid rgba(165, 90, 255, 0.08);
+        }
+        .checklist-panel .item:last-child {
+            border-bottom: none;
+        }
+        .box {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+            border-radius: 3px;
+            border: 1px solid rgba(165, 90, 255, 0.5);
+            background: rgba(23, 0, 50, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        .item.checked .box {
+            background: rgba(88, 232, 76, 0.15);
+            border-color: var(--green);
+            box-shadow: 0 0 6px rgba(88, 232, 76, 0.4);
+        }
+        .box::after {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 1px;
+            background: var(--green);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.12s;
+        }
+        .item.checked .box::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .item-label {
+            font-size: 12.5px;
+            letter-spacing: 0.3px;
+            color: var(--mist);
+        }
+        .checklist-setup {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .checklist-setup .setup-hint {
+            font-size: 11.5px;
+            color: var(--slate);
+            letter-spacing: 0.3px;
+            line-height: 1.5;
+        }
+        .checklist-edit-btn {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--slate);
+            background: none;
+            border: 1px dashed rgba(101, 115, 131, 0.4);
+            border-radius: 4px;
+            padding: 5px 9px;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+        .checklist-edit-btn:hover {
+            color: var(--cyan);
+            border-color: var(--cyan);
+        }
+        .item.checked .item-label {
+            color: var(--slate);
+            text-decoration: line-through;
+        }
+
+        /* ── notes section (stacked vertically) ── */
+        .notes-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .notes-section .notes-panel {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        /* notes input row — site number, category, status in one line */
+        .notes-input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .notes-input-row input {
+            background: rgba(23, 0, 50, 0.6);
+            border: 1px solid rgba(165, 90, 255, 0.4);
+            border-radius: 5px;
+            padding: 7px 8px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 12.5px;
+            flex: 0 1 100px;
+            min-width: 70px;
+        }
+        .notes-input-row select {
+            font-family: inherit;
+            font-size: 12px;
+            background: rgba(23, 0, 50, 0.6);
+            border: 1px solid rgba(165, 90, 255, 0.4);
+            border-radius: 5px;
+            padding: 7px 8px;
+            color: var(--text);
+            flex: 1 1 120px;
+            min-width: 100px;
+        }
+        .notes-input-row input:focus,
+        .notes-input-row select:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+
+        /* notes form (textarea + button) */
+        .notes-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .notes-form textarea {
+            font-family: inherit;
+            font-size: 12.5px;
+            width: 100%;
+            background: rgba(23, 0, 50, 0.6);
+            border: 1px solid rgba(165, 90, 255, 0.4);
+            border-radius: 6px;
+            padding: 9px 10px;
+            color: var(--text);
+            resize: vertical;
+        }
+        .apply-btn {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: var(--bg-deep);
+            background: var(--magenta);
+            border: none;
+            border-radius: 5px;
+            padding: 8px 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            align-self: flex-start;
+        }
+        .apply-btn:hover {
+            filter: brightness(1.1);
+        }
+
+        /* notes output */
+        .notes-json {
+            background: rgba(23, 0, 50, 0.5);
+            border: 1px solid rgba(165, 90, 255, 0.2);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            color: var(--mist);
+            max-height: 300px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== STICKY CONSOLE BAR (unchanged) ===== -->
+    <div class="console">
+        <div class="zones" id="zoneGrid"></div>
+        <div class="eta-block">
+            <span class="eta-readout zero" id="etaReadout">+0h</span>
+            <div class="eta-arrows">
+                <button class="eta-btn" id="upBtn">▲</button>
+                <button class="eta-btn" id="downBtn">▼</button>
+            </div>
+            <button class="eta-reset" id="resetBtn">Reset</button>
+        </div>
+    </div>
+
+    <div class="wrap">
+
+        <!-- ===== TOP ROW ===== -->
+        <div class="top-row">
+            <div class="btn-row">
+                <span class="date-tag" id="dateTag"></span>
+                <button class="reset-btn" id="resetShiftBtn">Reset Shift</button>
+            </div>
+        </div>
+
+        <!-- ===== CALL / EMAIL LOG – side by side, no headers ===== -->
+        <div class="log-section">
+
+            <!-- Group 1: INV · ETA · OTHER · TOTAL -->
+            <div class="log-group">
+                <div class="log-grid" id="callLogGrid">
+                    <div class="log-item" data-key="m1">
+                        <div class="log-label">INV Calls</div>
+                        <div class="log-controls">
+                            <button class="log-btn minus" data-action="dec" data-key="m1">−</button>
+                            <span class="log-val" data-display="m1">0</span>
+                            <button class="log-btn" data-action="inc" data-key="m1">+</button>
+                        </div>
+                    </div>
+                    <div class="log-item" data-key="m2">
+                        <div class="log-label">ETA Calls</div>
+                        <div class="log-controls">
+                            <button class="log-btn minus" data-action="dec" data-key="m2">−</button>
+                            <span class="log-val" data-display="m2">0</span>
+                            <button class="log-btn" data-action="inc" data-key="m2">+</button>
+                        </div>
+                    </div>
+                    <div class="log-item" data-key="m3">
+                        <div class="log-label">OTHER Calls</div>
+                        <div class="log-controls">
+                            <button class="log-btn minus" data-action="dec" data-key="m3">−</button>
+                            <span class="log-val" data-display="m3">0</span>
+                            <button class="log-btn" data-action="inc" data-key="m3">+</button>
+                        </div>
+                    </div>
+                    <div class="log-item total-item" data-key="m4">
+                        <div class="log-label">TOTAL</div>
+                        <div class="log-controls">
+                            <span class="log-val" data-display="m4">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 2: CALLS · EMAILS -->
+            <div class="log-group">
+                <div class="log-grid two-col" id="commLogGrid">
+                    <div class="log-item" data-key="n1">
+                        <div class="log-label">CALLS</div>
+                        <div class="log-controls">
+                            <button class="log-btn minus" data-action="dec" data-key="n1">−</button>
+                            <span class="log-val" data-display="n1">0</span>
+                            <button class="log-btn" data-action="inc" data-key="n1">+</button>
+                        </div>
+                    </div>
+                    <div class="log-item" data-key="n2">
+                        <div class="log-label">EMAILS</div>
+                        <div class="log-controls">
+                            <button class="log-btn minus" data-action="dec" data-key="n2">−</button>
+                            <span class="log-val" data-display="n2">0</span>
+                            <button class="log-btn" data-action="inc" data-key="n2">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CHECKLIST (collapsible) ===== -->
+        <div class="panel checklist-panel" id="checklistPanel">
+            <div class="panel-title" id="checklistTrigger">
+                <span class="title-left">
+                    Checklist
+                    <span class="panel-count" id="checklistCount">0/0</span>
+                </span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="panel-body">
+                <div id="checklistSetup" class="checklist-setup">
+                    <p class="setup-hint">Paste your checklist items below, separated by commas, then apply. This list is saved only in this browser — never in the site's code.</p>
+                    <div class="notes-form">
+                        <textarea id="checklistSetupInput" rows="4" placeholder="Item one, Item two, Item three..."></textarea>
+                        <button class="apply-btn" id="checklistSetupApply">Apply List</button>
+                    </div>
+                </div>
+                <div id="unifiedChecklist"></div>
+                <button class="checklist-edit-btn" id="checklistEditBtn">✎ Edit List</button>
+            </div>
+        </div>
+
+        <!-- ===== NOTES – two separate panels, stacked vertically ===== -->
+        <div class="notes-section">
+            <!-- Notes Input Panel (collapsible) -->
+            <div class="panel notes-panel" id="notesInputPanel">
+                <div class="panel-title" id="notesInputTrigger">
+                    <span class="title-left">Notes</span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="panel-body">
+                    <!-- site number, category, status in one row (no "Site Number" label) -->
+                    <div class="notes-input-row">
+                        <input type="text" id="siteNumberInput" placeholder="Site #" value="">
+                        <select id="noteCategory"></select>
+                        <select id="noteStatus"></select>
+                    </div>
+                    <div id="dropdownSetup" class="checklist-setup">
+                        <p class="setup-hint">Paste each dropdown's options below, separated by commas.</p>
+                        <div class="notes-form">
+                            <textarea id="categorySetupInput" rows="3" placeholder="First dropdown options..."></textarea>
+                            <textarea id="statusSetupInput" rows="3" placeholder="Second dropdown options..."></textarea>
+                            <button class="apply-btn" id="dropdownSetupApply">Apply Options</button>
+                        </div>
+                    </div>
+                    <div class="notes-form">
+                        <textarea id="noteText" placeholder="Jot it down..." rows="2"></textarea>
+                        <button class="apply-btn" id="addNoteBtn">Add Note</button>
+                    </div>
+                    <button class="checklist-edit-btn" id="dropdownEditBtn">✎ Edit Dropdown Options</button>
+                </div>
+            </div>
+
+            <!-- Notes Output Panel (collapsible) -->
+            <div class="panel notes-panel" id="notesOutputPanel">
+                <div class="panel-title" id="notesOutputTrigger">
+                    <span class="title-left">
+                        Output
+                        <span class="panel-count" id="notesCount">0 logged</span>
+                    </span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="panel-body">
+                    <div class="notes-json" id="notesJsonDisplay">{ }</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        (function() {
+            // ============================================================
+            //  ZONE CLOCK (unchanged)
+            // ============================================================
+            const zones = [
+                { name: 'ET', tz: 'America/New_York', tag: null },
+                { name: 'CT', tz: 'America/Chicago', tag: 'WORK' },
+                { name: 'MT', tz: 'America/Denver', tag: null },
+                { name: 'PT', tz: 'America/Los_Angeles', tag: null },
+            ];
+            const grid = document.getElementById('zoneGrid');
+            zones.forEach((z, i) => {
+                const card = document.createElement('div');
+                card.className = 'zone-card' + (z.tag === 'WORK' ? ' home' : '');
+                card.innerHTML =
+                    `<span class="zone-name">${z.name}</span><span class="time-24" id="t24-${i}">--:--:--</span><span class="time-12" id="t12-${i}">--:-- <span class="meridiem">--</span></span>`;
+                grid.appendChild(card);
+            });
+            let offsetHours = 0;
+            const etaReadout = document.getElementById('etaReadout');
+
+            function updateOffsetDisplay() {
+                if (offsetHours === 0) {
+                    etaReadout.textContent = '+0h';
+                    etaReadout.classList.add('zero');
+                } else {
+                    etaReadout.textContent = (offsetHours > 0 ? '+' : '') + offsetHours + 'h';
+                    etaReadout.classList.remove('zero');
+                }
+            }
+            document.getElementById('upBtn').addEventListener('click', () => { offsetHours++;
+                updateOffsetDisplay(); });
+            document.getElementById('downBtn').addEventListener('click', () => { offsetHours--;
+                updateOffsetDisplay(); });
+            document.getElementById('resetBtn').addEventListener('click', () => { offsetHours = 0;
+                updateOffsetDisplay(); });
+
+            function tickClocks() {
+                const now = new Date(Date.now() + offsetHours * 3600 * 1000);
+                zones.forEach((z, i) => {
+                    const fmt24 = new Intl.DateTimeFormat('en-US', { timeZone: z.tz, hour: '2-digit',
+                        minute: '2-digit', second: '2-digit', hour12: false }).format(now);
+                    const fmt12 = new Intl.DateTimeFormat('en-US', { timeZone: z.tz, hour: '2-digit',
+                        minute: '2-digit', hour12: true }).format(now);
+                    document.getElementById(`t24-${i}`).textContent = fmt24;
+                    const parts = fmt12.split(' ');
+                    document.getElementById(`t12-${i}`).innerHTML =
+                        `${parts[0]} <span class="meridiem">${parts[1]||''}</span>`;
+                });
+            }
+            tickClocks();
+            setInterval(tickClocks, 1000);
+
+            // ============================================================
+            //  COLLAPSIBLE PANELS
+            // ============================================================
+            function setupCollapsible(triggerId, panelId) {
+                const trigger = document.getElementById(triggerId);
+                const panel = document.getElementById(panelId);
+                if (!trigger || !panel) return;
+                trigger.addEventListener('click', () => {
+                    panel.classList.toggle('collapsed');
+                });
+            }
+            setupCollapsible('checklistTrigger', 'checklistPanel');
+            setupCollapsible('notesInputTrigger', 'notesInputPanel');
+            setupCollapsible('notesOutputTrigger', 'notesOutputPanel');
+
+            // ============================================================
+            //  STATE
+            // ============================================================
+            const STORAGE_KEY = 'dailyOpsStateV3';
+            const NOTES_KEY = 'dailyOpsNotesV2';
+            const CHECKLIST_ITEMS_KEY = 'dailyOpsChecklistItemsV1';
+            const OPT_A_KEY = 'dailyOpsOptA';
+            const OPT_B_KEY = 'dailyOpsOptB';
+            const SITE_KEY = 'dailyOpsSite';
+
+            function loadChecklistItems() {
+                try {
+                    const raw = localStorage.getItem(CHECKLIST_ITEMS_KEY);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (Array.isArray(parsed)) return parsed.filter(Boolean);
+                    }
+                } catch (e) { /* fall through */ }
+                return [];
+            }
+
+            function saveChecklistItems(items) {
+                localStorage.setItem(CHECKLIST_ITEMS_KEY, JSON.stringify(items));
+            }
+
+            let allChecklistItems = loadChecklistItems();
+
+            function getCentralShiftLabel() {
+                const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hour: '2-digit',
+                    minute: '2-digit', hour12: false, weekday: 'short', year: 'numeric', month: '2-digit',
+                    day: '2-digit' });
+                const parts = fmt.formatToParts(new Date());
+                const obj = {};
+                parts.forEach(p => obj[p.type] = p.value);
+                let hour = +obj.hour;
+                if (hour === 24) hour = 0;
+                const weekday = obj.weekday;
+                const hh = String(hour).padStart(2, '0');
+                const mm = obj.minute.padStart(2, '0');
+                return `${hh}:${mm} CT`;
+            }
+
+            function defaultState() {
+                const ck = {};
+                allChecklistItems.forEach(item => ck[item] = false);
+                return {
+                    t1: getCentralShiftLabel(),
+                    t2: new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', month: '2-digit',
+                        day: '2-digit', year: 'numeric' }).format(new Date()),
+                    ck: ck,
+                    m1: 0,
+                    m2: 0,
+                    m3: 0,
+                    n1: 0,
+                    n2: 0,
+                    s1: localStorage.getItem(SITE_KEY) || ''
+                };
+            }
+
+            function loadState() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        allChecklistItems.forEach(item => { if (!(item in parsed.ck)) parsed.ck[item] =
+                            false; });
+                        ['m1', 'm2', 'm3', 'n1', 'n2'].forEach(k => {
+                            if (typeof parsed[k] !== 'number') parsed[k] = 0;
+                        });
+                        return parsed;
+                    }
+                } catch (e) { /* fall through */ }
+                return defaultState();
+            }
+
+            function saveState() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            }
+
+            let state = loadState();
+
+            const siteNumberInput = document.getElementById('siteNumberInput');
+            siteNumberInput.value = state.s1 || '';
+            siteNumberInput.addEventListener('change', () => {
+                state.s1 = siteNumberInput.value.trim();
+                localStorage.setItem(SITE_KEY, state.s1);
+                saveState();
+                updateNotesJsonDisplay();
+            });
+
+            // ============================================================
+            //  RENDER: date tag
+            // ============================================================
+            function renderDateTag() {
+                document.getElementById('dateTag').textContent = `${state.t1} · ${state.t2}`;
+            }
+
+            // ============================================================
+            //  RENDER: checklist
+            // ============================================================
+            const checklistContainer = document.getElementById('unifiedChecklist');
+
+            function renderChecklist() {
+                checklistContainer.innerHTML = '';
+                allChecklistItems.forEach(label => {
+                    const row = document.createElement('div');
+                    row.className = 'item' + (state.ck[label] ? ' checked' : '');
+                    row.innerHTML =
+                        `<div class="box"></div><div class="item-label">${label}</div>`;
+                    row.addEventListener('click', () => {
+                        state.ck[label] = !state.ck[label];
+                        row.classList.toggle('checked');
+                        saveState();
+                        updateChecklistCount();
+                        updateNotesJsonDisplay();
+                    });
+                    checklistContainer.appendChild(row);
+                });
+                updateChecklistCount();
+            }
+
+            function updateChecklistCount() {
+                const done = allChecklistItems.filter(i => state.ck[i]).length;
+                document.getElementById('checklistCount').textContent = `${done}/${allChecklistItems.length}`;
+            }
+
+            // ============================================================
+            //  CHECKLIST SETUP (paste-in list, no items ever in source)
+            // ============================================================
+            function toggleChecklistSetup(show) {
+                const setupEl = document.getElementById('checklistSetup');
+                const listEl = document.getElementById('unifiedChecklist');
+                const editBtn = document.getElementById('checklistEditBtn');
+                if (show) {
+                    document.getElementById('checklistSetupInput').value = allChecklistItems.join(', ');
+                    setupEl.style.display = '';
+                    listEl.style.display = 'none';
+                    editBtn.style.display = 'none';
+                } else {
+                    setupEl.style.display = 'none';
+                    listEl.style.display = '';
+                    editBtn.style.display = allChecklistItems.length ? '' : 'none';
+                }
+            }
+
+            document.getElementById('checklistSetupApply').addEventListener('click', () => {
+                const raw = document.getElementById('checklistSetupInput').value;
+                const items = raw.split(',').map(s => s.trim()).filter(Boolean);
+                if (!items.length) return;
+                allChecklistItems = items;
+                saveChecklistItems(items);
+                allChecklistItems.forEach(item => {
+                    if (!(item in state.ck)) state.ck[item] = false;
+                });
+                saveState();
+                renderChecklist();
+                updateNotesJsonDisplay();
+                toggleChecklistSetup(false);
+            });
+
+            document.getElementById('checklistEditBtn').addEventListener('click', () => {
+                toggleChecklistSetup(true);
+            });
+
+            // ============================================================
+            //  RENDER: call/email log counters
+            // ============================================================
+            const displayMap = {};
+
+            function buildDisplayMap() {
+                document.querySelectorAll('[data-display]').forEach(el => {
+                    const key = el.getAttribute('data-display');
+                    displayMap[key] = el;
+                });
+            }
+
+            function renderCounters() {
+                const total = (state.m1 || 0) + (state.m2 || 0) + (state.m3 || 0);
+                const keys = ['m1', 'm2', 'm3', 'n1', 'n2'];
+                keys.forEach(k => {
+                    if (displayMap[k]) {
+                        displayMap[k].textContent = state[k] || 0;
+                    }
+                });
+                if (displayMap['m4']) {
+                    displayMap['m4'].textContent = total;
+                }
+                state.m4 = total;
+            }
+
+            function wireButtons() {
+                document.querySelectorAll('.log-btn[data-action]').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        const key = this.getAttribute('data-key');
+                        const action = this.getAttribute('data-action');
+                        if (!key) return;
+                        if (action === 'inc') {
+                            state[key] = (state[key] || 0) + 1;
+                        } else if (action === 'dec') {
+                            state[key] = Math.max(0, (state[key] || 0) - 1);
+                        } else {
+                            return;
+                        }
+                        saveState();
+                        renderCounters();
+                        updateNotesJsonDisplay();
+                    });
+                });
+            }
+
+            // ============================================================
+            //  DROPDOWN OPTIONS SETUP (paste-in lists, no options ever in source)
+            // ============================================================
+            function loadOptions(key) {
+                try {
+                    const raw = localStorage.getItem(key);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (Array.isArray(parsed)) return parsed.filter(Boolean);
+                    }
+                } catch (e) { /* fall through */ }
+                return [];
+            }
+
+            function saveOptions(key, items) {
+                localStorage.setItem(key, JSON.stringify(items));
+            }
+
+            let optA = loadOptions(OPT_A_KEY);
+            let optB = loadOptions(OPT_B_KEY);
+
+            function populateSelect(selectEl, items) {
+                selectEl.innerHTML = '';
+                items.forEach(label => {
+                    const opt = document.createElement('option');
+                    opt.textContent = label;
+                    selectEl.appendChild(opt);
+                });
+            }
+
+            function toggleDropdownSetup(show) {
+                const setupEl = document.getElementById('dropdownSetup');
+                const rowEl = document.querySelector('.notes-input-row');
+                const editBtn = document.getElementById('dropdownEditBtn');
+                if (show) {
+                    document.getElementById('categorySetupInput').value = optA.join(', ');
+                    document.getElementById('statusSetupInput').value = optB.join(', ');
+                    setupEl.style.display = '';
+                    rowEl.style.display = 'none';
+                    editBtn.style.display = 'none';
+                } else {
+                    setupEl.style.display = 'none';
+                    rowEl.style.display = '';
+                    editBtn.style.display = (optA.length && optB.length) ? '' : 'none';
+                }
+            }
+
+            document.getElementById('dropdownSetupApply').addEventListener('click', () => {
+                const itemsA = document.getElementById('categorySetupInput').value.split(',')
+                    .map(s => s.trim()).filter(Boolean);
+                const itemsB = document.getElementById('statusSetupInput').value.split(',')
+                    .map(s => s.trim()).filter(Boolean);
+                if (!itemsA.length || !itemsB.length) return;
+                optA = itemsA;
+                optB = itemsB;
+                saveOptions(OPT_A_KEY, optA);
+                saveOptions(OPT_B_KEY, optB);
+                populateSelect(document.getElementById('noteCategory'), optA);
+                populateSelect(document.getElementById('noteStatus'), optB);
+                toggleDropdownSetup(false);
+            });
+
+            document.getElementById('dropdownEditBtn').addEventListener('click', () => {
+                toggleDropdownSetup(true);
+            });
+
+            // ============================================================
+            //  NOTES
+            // ============================================================
+            let notes = [];
+            try { notes = JSON.parse(localStorage.getItem(NOTES_KEY) || '[]'); } catch (e) { notes = []; }
+            const notesJsonDisplay = document.getElementById('notesJsonDisplay');
+            const notesCountSpan = document.getElementById('notesCount');
+
+            function formatTimeCT() {
+                return new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', month: '2-digit',
+                        day: '2-digit',
+                        year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()) +
+                    ' CT';
+            }
+
+            function buildExportPayload() {
+                const c1 = {};
+                allChecklistItems.forEach(item => {
+                    c1[item] = state.ck[item] ? 1 : 0;
+                });
+                const lg = notes.map(n => ({ a: n.a, b: n.b, c: n.c, d: n.d }));
+                return {
+                    t1: state.t1,
+                    t2: state.t2,
+                    c1: c1,
+                    g1: {
+                        m1: state.m1 || 0,
+                        m2: state.m2 || 0,
+                        m3: state.m3 || 0,
+                        m4: (state.m1 || 0) + (state.m2 || 0) + (state.m3 || 0)
+                    },
+                    g2: {
+                        n1: state.n1 || 0,
+                        n2: state.n2 || 0
+                    },
+                    lg: lg,
+                    s1: state.s1 || ''
+                };
+            }
+
+            function updateNotesJsonDisplay() {
+                const payload = buildExportPayload();
+                const { t1, t2, c1, g1, g2, lg, s1 } = payload;
+                const displayObj = { t1, t2, c1, g1, g2, lg };
+                if (s1) displayObj.s1 = s1;
+                notesJsonDisplay.textContent = JSON.stringify(displayObj, null, 2);
+                notesCountSpan.textContent = `${notes.length} logged`;
+            }
+
+            document.getElementById('addNoteBtn').addEventListener('click', () => {
+                const text = document.getElementById('noteText').value.trim();
+                if (!text) return;
+                const category = document.getElementById('noteCategory').value;
+                const status = document.getElementById('noteStatus').value;
+                const time = formatTimeCT();
+                notes.push({ id: Date.now(), a: category, b: status, c: text, d: time });
+                localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+                document.getElementById('noteText').value = '';
+                updateNotesJsonDisplay();
+            });
+
+            // ============================================================
+            //  RESET
+            // ============================================================
+            document.getElementById('resetShiftBtn').addEventListener('click', () => {
+                if (!confirm('Reset all checklist items and counters?')) return;
+                allChecklistItems.forEach(item => state.ck[item] = false);
+                state.m1 = 0;
+                state.m2 = 0;
+                state.m3 = 0;
+                state.n1 = 0;
+                state.n2 = 0;
+                state.t1 = getCentralShiftLabel();
+                state.t2 = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', month: '2-digit',
+                    day: '2-digit', year: 'numeric' }).format(new Date());
+                saveState();
+                renderChecklist();
+                renderCounters();
+                renderDateTag();
+                updateNotesJsonDisplay();
+            });
+
+            // ============================================================
+            //  INIT
+            // ============================================================
+            buildDisplayMap();
+            renderDateTag();
+            renderChecklist();
+            renderCounters();
+            wireButtons();
+            populateSelect(document.getElementById('noteCategory'), optA);
+            populateSelect(document.getElementById('noteStatus'), optB);
+            updateNotesJsonDisplay();
+            toggleChecklistSetup(allChecklistItems.length === 0);
+            toggleDropdownSetup(!(optA.length && optB.length));
+        })();
+    </script>
+</body>
+</html>
