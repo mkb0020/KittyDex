@@ -26,6 +26,8 @@ from api.appStore.checkout import appstore_checkout_bp         # APP STORE STORE
 from api.appStore.projects import appstore_projects_bp         # APP STORE STOREFRONT
 from api.appStore.admin import appstore_admin_bp               # APP STORE STOREFRONT
 
+from api.opsConsole import opsconsole_bp 
+
 from api.projects import projects_bp
 from flask_cors import CORS
 
@@ -59,6 +61,8 @@ app.register_blueprint(projects_bp)
 app.register_blueprint(appstore_checkout_bp)    # APP STORE STOREFRONT
 app.register_blueprint(appstore_projects_bp)    # APP STORE STOREFRONT
 app.register_blueprint(appstore_admin_bp)       # APP STORE STOREFRONT
+
+app.register_blueprint(opsconsole_bp) 
 
 FORMS_DIR = os.path.join(os.path.dirname(__file__), "forms")
 
