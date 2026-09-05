@@ -31,9 +31,12 @@ from api.opsConsole import opsconsole_bp
 from api.projects import projects_bp
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder='static', template_folder='forms')
-CORS(app)
 
+
+
+app = Flask(__name__, static_folder='static', template_folder='forms')
+app.secret_key = os.environ.get('FLASK_SECRET_KEY')
+CORS(app)
 # ====================== REGISTER BPS ======================
 
 app.register_blueprint(comments_bp)             # GENERAL
