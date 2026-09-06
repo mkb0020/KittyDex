@@ -440,6 +440,25 @@
         }
 
         /* ── checklist panel ── */
+        .checklist-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+        .checklist-row .checklist-panel {
+            flex: 1 1 0;
+            min-width: 260px;
+            margin-bottom: 0;
+        }
+        @media (max-width: 700px) {
+            .checklist-row {
+                flex-direction: column;
+            }
+            .checklist-row .checklist-panel {
+                min-width: unset;
+            }
+        }
         .checklist-panel {
             /* inherits .panel styles */
         }
@@ -655,7 +674,7 @@
             <div class="log-group">
                 <div class="log-grid" id="callLogGrid">
                     <div class="log-item" data-key="m1">
-                        <div class="log-label">INV Calls</div>
+                        <div class="log-label">INV</div>
                         <div class="log-controls">
                             <button class="log-btn minus" data-action="dec" data-key="m1">−</button>
                             <span class="log-val" data-display="m1">0</span>
@@ -663,7 +682,7 @@
                         </div>
                     </div>
                     <div class="log-item" data-key="m2">
-                        <div class="log-label">ETA Calls</div>
+                        <div class="log-label">ETA</div>
                         <div class="log-controls">
                             <button class="log-btn minus" data-action="dec" data-key="m2">−</button>
                             <span class="log-val" data-display="m2">0</span>
@@ -671,7 +690,7 @@
                         </div>
                     </div>
                     <div class="log-item" data-key="m3">
-                        <div class="log-label">OTHER Calls</div>
+                        <div class="log-label">OTHER</div>
                         <div class="log-controls">
                             <button class="log-btn minus" data-action="dec" data-key="m3">−</button>
                             <span class="log-val" data-display="m3">0</span>
@@ -710,25 +729,46 @@
             </div>
         </div>
 
-        <!-- ===== CHECKLIST (collapsible) ===== -->
-        <div class="panel checklist-panel" id="checklistPanel">
-            <div class="panel-title" id="checklistTrigger">
-                <span class="title-left">
-                    Checklist
-                    <span class="panel-count" id="checklistCount">0/0</span>
-                </span>
-                <span class="chevron">▼</span>
-            </div>
-            <div class="panel-body">
-                <div id="checklistSetup" class="checklist-setup">
-                    <p class="setup-hint">Paste your checklist items below, separated by commas, then apply. This list is saved only in this browser — never in the site's code.</p>
-                    <div class="notes-form">
-                        <textarea id="checklistSetupInput" rows="4" placeholder="Item one, Item two, Item three..."></textarea>
-                        <button class="apply-btn" id="checklistSetupApply">Apply List</button>
-                    </div>
+        <!-- ===== CHECKLISTS (collapsible) — two independent lists ===== -->
+        <div class="checklist-row">
+            <div class="panel checklist-panel" id="checklistPanel1">
+                <div class="panel-title" id="checklistTrigger1">
+                    <span class="title-left">
+                        Checklist 1
+                        <span class="panel-count" id="checklistCount1">0/0</span>
+                    </span>
+                    <span class="chevron">▼</span>
                 </div>
-                <div id="unifiedChecklist"></div>
-                <button class="checklist-edit-btn" id="checklistEditBtn">✎ Edit List</button>
+                <div class="panel-body">
+                    <div id="checklistSetup1" class="checklist-setup">
+                        <div class="notes-form">
+                            <textarea id="checklistSetupInput1" rows="4" placeholder="Item one, Item two, Item three..."></textarea>
+                            <button class="apply-btn" id="checklistSetupApply1">Apply List</button>
+                        </div>
+                    </div>
+                    <div id="unifiedChecklist1"></div>
+                    <button class="checklist-edit-btn" id="checklistEditBtn1">✎ Edit List</button>
+                </div>
+            </div>
+
+            <div class="panel checklist-panel" id="checklistPanel2">
+                <div class="panel-title" id="checklistTrigger2">
+                    <span class="title-left">
+                        Checklist 2
+                        <span class="panel-count" id="checklistCount2">0/0</span>
+                    </span>
+                    <span class="chevron">▼</span>
+                </div>
+                <div class="panel-body">
+                    <div id="checklistSetup2" class="checklist-setup">
+                        <div class="notes-form">
+                            <textarea id="checklistSetupInput2" rows="4" placeholder="Item one, Item two, Item three..."></textarea>
+                            <button class="apply-btn" id="checklistSetupApply2">Apply List</button>
+                        </div>
+                    </div>
+                    <div id="unifiedChecklist2"></div>
+                    <button class="checklist-edit-btn" id="checklistEditBtn2">✎ Edit List</button>
+                </div>
             </div>
         </div>
 
@@ -743,12 +783,12 @@
                 <div class="panel-body">
                     <!-- site number, category, status in one row (no "Site Number" label) -->
                     <div class="notes-input-row">
-                        <input type="text" id="siteNumberInput" placeholder="Site #" value="">
+                        <input type="text" id="siteNumberInput" placeholder="Number" value="">
+                        <input type="text" id="emailSubjectInput" placeholder="Sub" value="">
                         <select id="noteCategory"></select>
                         <select id="noteStatus"></select>
                     </div>
                     <div id="dropdownSetup" class="checklist-setup">
-                        <p class="setup-hint">Paste each dropdown's options below, separated by commas.</p>
                         <div class="notes-form">
                             <textarea id="categorySetupInput" rows="3" placeholder="First dropdown options..."></textarea>
                             <textarea id="statusSetupInput" rows="3" placeholder="Second dropdown options..."></textarea>
@@ -845,23 +885,25 @@
                     panel.classList.toggle('collapsed');
                 });
             }
-            setupCollapsible('checklistTrigger', 'checklistPanel');
+            setupCollapsible('checklistTrigger1', 'checklistPanel1');
+            setupCollapsible('checklistTrigger2', 'checklistPanel2');
             setupCollapsible('notesInputTrigger', 'notesInputPanel');
             setupCollapsible('notesOutputTrigger', 'notesOutputPanel');
 
             // ============================================================
             //  STATE
             // ============================================================
-            const STORAGE_KEY = 'dailyOpsStateV3';
-            const NOTES_KEY = 'dailyOpsNotesV2';
-            const CHECKLIST_ITEMS_KEY = 'dailyOpsChecklistItemsV1';
+            const STORAGE_KEY = 'dailyOpsStateV4';
+            const NOTES_KEY = 'dailyOpsNotesV3';
+            const CHECKLIST_ITEMS_KEY_1 = 'dailyOpsChecklistItems1';
+            const CHECKLIST_ITEMS_KEY_2 = 'dailyOpsChecklistItems2';
             const OPT_A_KEY = 'dailyOpsOptA';
             const OPT_B_KEY = 'dailyOpsOptB';
             const SITE_KEY = 'dailyOpsSite';
 
-            function loadChecklistItems() {
+            function loadChecklistItems(key) {
                 try {
-                    const raw = localStorage.getItem(CHECKLIST_ITEMS_KEY);
+                    const raw = localStorage.getItem(key);
                     if (raw) {
                         const parsed = JSON.parse(raw);
                         if (Array.isArray(parsed)) return parsed.filter(Boolean);
@@ -870,11 +912,14 @@
                 return [];
             }
 
-            function saveChecklistItems(items) {
-                localStorage.setItem(CHECKLIST_ITEMS_KEY, JSON.stringify(items));
+            function saveChecklistItems(key, items) {
+                localStorage.setItem(key, JSON.stringify(items));
             }
 
-            let allChecklistItems = loadChecklistItems();
+            let checklistItems = {
+                1: loadChecklistItems(CHECKLIST_ITEMS_KEY_1),
+                2: loadChecklistItems(CHECKLIST_ITEMS_KEY_2)
+            };
 
             function getCentralShiftLabel() {
                 const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hour: '2-digit',
@@ -892,19 +937,21 @@
             }
 
             function defaultState() {
-                const ck = {};
-                allChecklistItems.forEach(item => ck[item] = false);
+                const ck1 = {};
+                const ck2 = {};
+                checklistItems[1].forEach(item => ck1[item] = false);
+                checklistItems[2].forEach(item => ck2[item] = false);
                 return {
                     t1: getCentralShiftLabel(),
                     t2: new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', month: '2-digit',
                         day: '2-digit', year: 'numeric' }).format(new Date()),
-                    ck: ck,
+                    ck1: ck1,
+                    ck2: ck2,
                     m1: 0,
                     m2: 0,
                     m3: 0,
                     n1: 0,
-                    n2: 0,
-                    s1: localStorage.getItem(SITE_KEY) || ''
+                    n2: 0
                 };
             }
 
@@ -913,7 +960,11 @@
                     const raw = localStorage.getItem(STORAGE_KEY);
                     if (raw) {
                         const parsed = JSON.parse(raw);
-                        allChecklistItems.forEach(item => { if (!(item in parsed.ck)) parsed.ck[item] =
+                        if (!parsed.ck1) parsed.ck1 = {};
+                        if (!parsed.ck2) parsed.ck2 = {};
+                        checklistItems[1].forEach(item => { if (!(item in parsed.ck1)) parsed.ck1[item] =
+                            false; });
+                        checklistItems[2].forEach(item => { if (!(item in parsed.ck2)) parsed.ck2[item] =
                             false; });
                         ['m1', 'm2', 'm3', 'n1', 'n2'].forEach(k => {
                             if (typeof parsed[k] !== 'number') parsed[k] = 0;
@@ -931,12 +982,10 @@
             let state = loadState();
 
             const siteNumberInput = document.getElementById('siteNumberInput');
-            siteNumberInput.value = state.s1 || '';
+            const emailSubjectInput = document.getElementById('emailSubjectInput');
+            siteNumberInput.value = localStorage.getItem(SITE_KEY) || '';
             siteNumberInput.addEventListener('change', () => {
-                state.s1 = siteNumberInput.value.trim();
-                localStorage.setItem(SITE_KEY, state.s1);
-                saveState();
-                updateNotesJsonDisplay();
+                localStorage.setItem(SITE_KEY, siteNumberInput.value.trim());
             });
 
             // ============================================================
@@ -949,68 +998,75 @@
             // ============================================================
             //  RENDER: checklist
             // ============================================================
-            const checklistContainer = document.getElementById('unifiedChecklist');
+            const checklistKeyByIndex = { 1: CHECKLIST_ITEMS_KEY_1, 2: CHECKLIST_ITEMS_KEY_2 };
 
-            function renderChecklist() {
-                checklistContainer.innerHTML = '';
-                allChecklistItems.forEach(label => {
+            function renderChecklist(idx) {
+                const container = document.getElementById('unifiedChecklist' + idx);
+                const ckField = 'ck' + idx;
+                container.innerHTML = '';
+                checklistItems[idx].forEach(label => {
                     const row = document.createElement('div');
-                    row.className = 'item' + (state.ck[label] ? ' checked' : '');
+                    row.className = 'item' + (state[ckField][label] ? ' checked' : '');
                     row.innerHTML =
                         `<div class="box"></div><div class="item-label">${label}</div>`;
                     row.addEventListener('click', () => {
-                        state.ck[label] = !state.ck[label];
+                        state[ckField][label] = !state[ckField][label];
                         row.classList.toggle('checked');
                         saveState();
-                        updateChecklistCount();
+                        updateChecklistCount(idx);
                         updateNotesJsonDisplay();
                     });
-                    checklistContainer.appendChild(row);
+                    container.appendChild(row);
                 });
-                updateChecklistCount();
+                updateChecklistCount(idx);
             }
 
-            function updateChecklistCount() {
-                const done = allChecklistItems.filter(i => state.ck[i]).length;
-                document.getElementById('checklistCount').textContent = `${done}/${allChecklistItems.length}`;
+            function updateChecklistCount(idx) {
+                const ckField = 'ck' + idx;
+                const done = checklistItems[idx].filter(i => state[ckField][i]).length;
+                document.getElementById('checklistCount' + idx).textContent =
+                    `${done}/${checklistItems[idx].length}`;
             }
 
             // ============================================================
-            //  CHECKLIST SETUP (paste-in list, no items ever in source)
+            //  CHECKLIST SETUP (paste-in lists, no items ever in source)
             // ============================================================
-            function toggleChecklistSetup(show) {
-                const setupEl = document.getElementById('checklistSetup');
-                const listEl = document.getElementById('unifiedChecklist');
-                const editBtn = document.getElementById('checklistEditBtn');
+            function toggleChecklistSetup(idx, show) {
+                const setupEl = document.getElementById('checklistSetup' + idx);
+                const listEl = document.getElementById('unifiedChecklist' + idx);
+                const editBtn = document.getElementById('checklistEditBtn' + idx);
                 if (show) {
-                    document.getElementById('checklistSetupInput').value = allChecklistItems.join(', ');
+                    document.getElementById('checklistSetupInput' + idx).value = checklistItems[idx].join(', ');
                     setupEl.style.display = '';
                     listEl.style.display = 'none';
                     editBtn.style.display = 'none';
                 } else {
                     setupEl.style.display = 'none';
                     listEl.style.display = '';
-                    editBtn.style.display = allChecklistItems.length ? '' : 'none';
+                    editBtn.style.display = checklistItems[idx].length ? '' : 'none';
                 }
             }
 
-            document.getElementById('checklistSetupApply').addEventListener('click', () => {
-                const raw = document.getElementById('checklistSetupInput').value;
-                const items = raw.split(',').map(s => s.trim()).filter(Boolean);
-                if (!items.length) return;
-                allChecklistItems = items;
-                saveChecklistItems(items);
-                allChecklistItems.forEach(item => {
-                    if (!(item in state.ck)) state.ck[item] = false;
+            [1, 2].forEach(idx => {
+                document.getElementById('checklistSetupApply' + idx).addEventListener('click', () => {
+                    const raw = document.getElementById('checklistSetupInput' + idx).value;
+                    const items = raw.split(',').map(s => s.trim()).filter(Boolean);
+                    if (!items.length) return;
+                    checklistItems[idx] = items;
+                    saveChecklistItems(checklistKeyByIndex[idx], items);
+                    const ckField = 'ck' + idx;
+                    checklistItems[idx].forEach(item => {
+                        if (!(item in state[ckField])) state[ckField][item] = false;
+                    });
+                    saveState();
+                    renderChecklist(idx);
+                    updateNotesJsonDisplay();
+                    toggleChecklistSetup(idx, false);
                 });
-                saveState();
-                renderChecklist();
-                updateNotesJsonDisplay();
-                toggleChecklistSetup(false);
-            });
 
-            document.getElementById('checklistEditBtn').addEventListener('click', () => {
-                toggleChecklistSetup(true);
+                document.getElementById('checklistEditBtn' + idx).addEventListener('click', () => {
+                    toggleChecklistSetup(idx, true);
+                });
             });
 
             // ============================================================
@@ -1140,16 +1196,20 @@
                     ' CT';
             }
 
-            function buildExportPayload() {
-                const c1 = {};
-                allChecklistItems.forEach(item => {
-                    c1[item] = state.ck[item] ? 1 : 0;
+            function buildChecklistPayload(idx) {
+                const ckField = 'ck' + idx;
+                const out = {};
+                checklistItems[idx].forEach(item => {
+                    out[item] = state[ckField][item] ? 1 : 0;
                 });
-                const lg = notes.map(n => ({ a: n.a, b: n.b, c: n.c, d: n.d }));
+                return out;
+            }
+
+            function buildExportPayload() {
+                const lg = notes.map(n => ({ a: n.a, b: n.b, c: n.c, d: n.d, e: n.e || '', f: n.f || '' }));
                 return {
-                    t1: state.t1,
                     t2: state.t2,
-                    c1: c1,
+                    t1: state.t1,
                     g1: {
                         m1: state.m1 || 0,
                         m2: state.m2 || 0,
@@ -1160,17 +1220,15 @@
                         n1: state.n1 || 0,
                         n2: state.n2 || 0
                     },
-                    lg: lg,
-                    s1: state.s1 || ''
+                    c1: buildChecklistPayload(1),
+                    c2: buildChecklistPayload(2),
+                    lg: lg
                 };
             }
 
             function updateNotesJsonDisplay() {
                 const payload = buildExportPayload();
-                const { t1, t2, c1, g1, g2, lg, s1 } = payload;
-                const displayObj = { t1, t2, c1, g1, g2, lg };
-                if (s1) displayObj.s1 = s1;
-                notesJsonDisplay.textContent = JSON.stringify(displayObj, null, 2);
+                notesJsonDisplay.textContent = JSON.stringify(payload, null, 2);
                 notesCountSpan.textContent = `${notes.length} logged`;
             }
 
@@ -1179,10 +1237,14 @@
                 if (!text) return;
                 const category = document.getElementById('noteCategory').value;
                 const status = document.getElementById('noteStatus').value;
+                const site = siteNumberInput.value.trim();
+                const emailSubject = emailSubjectInput.value.trim();
                 const time = formatTimeCT();
-                notes.push({ id: Date.now(), a: category, b: status, c: text, d: time });
+                if (site) localStorage.setItem(SITE_KEY, site);
+                notes.push({ id: Date.now(), a: category, b: status, c: text, d: time, e: site, f: emailSubject });
                 localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
                 document.getElementById('noteText').value = '';
+                emailSubjectInput.value = '';
                 updateNotesJsonDisplay();
             });
 
@@ -1190,8 +1252,9 @@
             //  RESET
             // ============================================================
             document.getElementById('resetShiftBtn').addEventListener('click', () => {
-                if (!confirm('Reset all checklist items and counters?')) return;
-                allChecklistItems.forEach(item => state.ck[item] = false);
+                if (!confirm('Reset both checklists and counters?')) return;
+                checklistItems[1].forEach(item => state.ck1[item] = false);
+                checklistItems[2].forEach(item => state.ck2[item] = false);
                 state.m1 = 0;
                 state.m2 = 0;
                 state.m3 = 0;
@@ -1201,7 +1264,8 @@
                 state.t2 = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', month: '2-digit',
                     day: '2-digit', year: 'numeric' }).format(new Date());
                 saveState();
-                renderChecklist();
+                renderChecklist(1);
+                renderChecklist(2);
                 renderCounters();
                 renderDateTag();
                 updateNotesJsonDisplay();
@@ -1212,13 +1276,15 @@
             // ============================================================
             buildDisplayMap();
             renderDateTag();
-            renderChecklist();
+            renderChecklist(1);
+            renderChecklist(2);
             renderCounters();
             wireButtons();
             populateSelect(document.getElementById('noteCategory'), optA);
             populateSelect(document.getElementById('noteStatus'), optB);
             updateNotesJsonDisplay();
-            toggleChecklistSetup(allChecklistItems.length === 0);
+            toggleChecklistSetup(1, checklistItems[1].length === 0);
+            toggleChecklistSetup(2, checklistItems[2].length === 0);
             toggleDropdownSetup(!(optA.length && optB.length));
         })();
     </script>
