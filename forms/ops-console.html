@@ -21,6 +21,13 @@
             --green: #58e84c;
         }
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap');
+        @font-face {
+            font-family: 'Orbitron';
+            src: url('/static/fonts/Orbitron-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
         * {
             box-sizing: border-box;
             margin: 0;
@@ -50,7 +57,7 @@
             height: 52px;
         }
         .console-title {
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Orbitron', 'Rajdhani', sans-serif;
             font-weight: 700;
             letter-spacing: 2px;
             font-size: 10px;
@@ -200,7 +207,7 @@
             padding-bottom: 7px;
         }
         .page-title {
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Orbitron', 'Rajdhani', sans-serif;
             font-weight: 700;
             letter-spacing: 3px;
             font-size: 14px;
@@ -395,7 +402,7 @@
             margin-bottom: 22px;
         }
         .panel-title {
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Orbitron', 'Rajdhani', sans-serif;
             font-weight: 700;
             letter-spacing: 2px;
             font-size: 13px;
@@ -515,12 +522,6 @@
             flex-direction: column;
             gap: 10px;
         }
-        .checklist-setup .setup-hint {
-            font-size: 11.5px;
-            color: var(--slate);
-            letter-spacing: 0.3px;
-            line-height: 1.5;
-        }
         .checklist-edit-btn {
             font-family: 'Rajdhani', sans-serif;
             font-weight: 600;
@@ -556,7 +557,7 @@
             margin-bottom: 0;
         }
 
-        /* notes input row — site number, category, status in one line */
+        /* notes input row — number, category, status in one line */
         .notes-input-row {
             display: flex;
             align-items: center;
@@ -640,6 +641,194 @@
             max-height: 300px;
             overflow: auto;
         }
+
+        /* ── lookup / reference panels ── */
+        .rg-sheet-slot {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(23, 0, 50, 0.35);
+            border: 1px solid rgba(165, 90, 255, 0.18);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .rg-slot-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .rg-slot-label {
+            flex: 1;
+            background: rgba(23, 0, 50, 0.6);
+            border: 1px solid rgba(165, 90, 255, 0.4);
+            border-radius: 5px;
+            padding: 6px 8px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 12px;
+        }
+        .rg-slot-label:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        .rg-remove-btn {
+            width: 26px;
+            height: 26px;
+            flex-shrink: 0;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 105, 180, 0.4);
+            background: none;
+            color: var(--pink);
+            font-size: 14px;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .rg-remove-btn:hover {
+            background: rgba(255, 105, 180, 0.12);
+        }
+        .rg-sheet-slot textarea {
+            font-family: inherit;
+            font-size: 12px;
+            width: 100%;
+            background: rgba(23, 0, 50, 0.6);
+            border: 1px solid rgba(165, 90, 255, 0.4);
+            border-radius: 6px;
+            padding: 8px 9px;
+            color: var(--text);
+            resize: vertical;
+        }
+        .rg-sheet-slot textarea:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        .rg-error {
+            font-size: 11px;
+            color: var(--pink);
+            letter-spacing: 0.3px;
+        }
+        .rg-search-row {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0 14px;
+            flex-wrap: wrap;
+        }
+        .rg-search-row input {
+            flex: 1 1 200px;
+            background: rgba(23, 0, 50, 0.6);
+            border: 1px solid rgba(165, 90, 255, 0.4);
+            border-radius: 5px;
+            padding: 8px 10px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 13px;
+        }
+        .rg-search-row input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        .rg-results {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .rg-empty {
+            font-size: 12px;
+            color: var(--slate);
+            letter-spacing: 0.3px;
+            padding: 4px 2px;
+        }
+        .rg-result-card {
+            background: linear-gradient(160deg, rgba(0, 255, 255, 0.05), rgba(44, 5, 85, 0.4));
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 7px;
+            padding: 10px 12px;
+        }
+        .rg-result-title {
+            font-family: 'Orbitron', 'Rajdhani', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            font-size: 11px;
+            color: var(--cyan);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed rgba(0, 255, 255, 0.2);
+        }
+        .rg-result-field {
+            font-size: 12.5px;
+            line-height: 1.5;
+            margin-bottom: 3px;
+        }
+        .rg-field-label {
+            color: var(--violet-lt);
+            font-weight: 600;
+        }
+        .rg-field-value {
+            color: var(--mist);
+            white-space: pre-wrap;
+        }
+        .rg-steps-block {
+            background: linear-gradient(160deg, rgba(131, 12, 222, 0.08), rgba(44, 5, 85, 0.35));
+            border: 1px solid rgba(165, 90, 255, 0.18);
+            border-radius: 7px;
+            padding: 10px 12px 6px;
+            margin-bottom: 10px;
+        }
+        .rg-steps-list {
+            padding-left: 20px;
+            margin-top: 4px;
+        }
+        .rg-steps-list li {
+            font-size: 12.5px;
+            line-height: 1.6;
+            color: var(--mist);
+            margin-bottom: 6px;
+        }
+
+        /* ── scratch notes ── */
+        .scratch-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .scratch-input-row input {
+            flex: 1;
+            background: rgba(23, 0, 50, 0.6);
+            border: 1px solid rgba(165, 90, 255, 0.4);
+            border-radius: 5px;
+            padding: 8px 10px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 13px;
+        }
+        .scratch-input-row input:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        .scratch-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            background: linear-gradient(160deg, rgba(255, 105, 180, 0.06), rgba(44, 5, 85, 0.4));
+            border: 1px solid rgba(255, 105, 180, 0.18);
+            border-radius: 7px;
+            padding: 8px 10px;
+        }
+        .scratch-item-text {
+            flex: 1;
+            font-size: 12.5px;
+            line-height: 1.5;
+            color: var(--mist);
+            white-space: pre-wrap;
+        }
+        .scratch-item-time {
+            display: block;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            color: var(--slate);
+            margin-bottom: 2px;
+        }
     </style>
 </head>
 <body>
@@ -674,7 +863,7 @@
             <div class="log-group">
                 <div class="log-grid" id="callLogGrid">
                     <div class="log-item" data-key="m1">
-                        <div class="log-label">INV</div>
+                        <div class="log-label">INV Calls</div>
                         <div class="log-controls">
                             <button class="log-btn minus" data-action="dec" data-key="m1">−</button>
                             <span class="log-val" data-display="m1">0</span>
@@ -682,7 +871,7 @@
                         </div>
                     </div>
                     <div class="log-item" data-key="m2">
-                        <div class="log-label">ETA</div>
+                        <div class="log-label">ETA Calls</div>
                         <div class="log-controls">
                             <button class="log-btn minus" data-action="dec" data-key="m2">−</button>
                             <span class="log-val" data-display="m2">0</span>
@@ -690,7 +879,7 @@
                         </div>
                     </div>
                     <div class="log-item" data-key="m3">
-                        <div class="log-label">OTHER</div>
+                        <div class="log-label">OTHER Calls</div>
                         <div class="log-controls">
                             <button class="log-btn minus" data-action="dec" data-key="m3">−</button>
                             <span class="log-val" data-display="m3">0</span>
@@ -781,10 +970,10 @@
                     <span class="chevron">▼</span>
                 </div>
                 <div class="panel-body">
-                    <!-- site number, category, status in one row (no "Site Number" label) -->
+                    <!-- number, category, status in one row (no "Number" label) -->
                     <div class="notes-input-row">
-                        <input type="text" id="siteNumberInput" placeholder="Number" value="">
-                        <input type="text" id="emailSubjectInput" placeholder="Sub" value="">
+                        <input type="text" id="numberInput" placeholder="#" value="">
+                        <input type="text" id="emailSubjectInput" placeholder="Email subject" value="">
                         <select id="noteCategory"></select>
                         <select id="noteStatus"></select>
                     </div>
@@ -796,7 +985,7 @@
                         </div>
                     </div>
                     <div class="notes-form">
-                        <textarea id="noteText" placeholder="Jot it down..." rows="2"></textarea>
+                        <textarea id="noteText" placeholder="THINGS..." rows="2"></textarea>
                         <button class="apply-btn" id="addNoteBtn">Add Note</button>
                     </div>
                     <button class="checklist-edit-btn" id="dropdownEditBtn">✎ Edit Dropdown Options</button>
@@ -814,7 +1003,68 @@
                 </div>
                 <div class="panel-body">
                     <div class="notes-json" id="notesJsonDisplay">{ }</div>
+                    <button class="checklist-edit-btn" id="notesClearBtn">Clear Notes</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- ===== SCRATCH NOTES — personal reminders, never part of the turnover JSON ===== -->
+        <div class="panel scratch-panel" id="scratchPanel">
+            <div class="panel-title" id="scratchTrigger">
+                <span class="title-left">
+                    DON'T FORGET!
+                    <span class="panel-count" id="scratchCount">0</span>
+                </span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="panel-body">
+                <div class="scratch-input-row">
+                    <input type="text" id="scratchInput" placeholder="FROM ME. TO ME...">
+                    <button class="apply-btn" id="scratchAddBtn">Add</button>
+                </div>
+                <div id="scratchList" class="rg-results"></div>
+                <button class="checklist-edit-btn" id="scratchClearBtn">Clear All</button>
+            </div>
+        </div>
+
+        <!-- ===== LOOKUP (collapsible) — nothing here is ever saved ===== -->
+        <div class="panel rg-panel" id="rgLookupPanel">
+            <div class="panel-title" id="rgLookupTrigger">
+                <span class="title-left">
+                    FIND
+                    <span class="panel-count" id="rgLookupSheetCount">0 sheets</span>
+                </span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="panel-body">
+                <div id="rgLookupSlots"></div>
+                <button class="checklist-edit-btn" id="rgLookupAddSlot">+ Add Sheet</button>
+
+                <div class="rg-search-row">
+                    <input type="text" id="rgNumberSearch" placeholder="Number (exact match)">
+                    <button class="apply-btn" id="rgSearchBtn">Search</button>
+                </div>
+                <div id="rgLookupResults" class="rg-results"></div>
+            </div>
+        </div>
+
+        <!-- ===== REFERENCE STEPS (collapsible) — nothing here is ever saved ===== -->
+        <div class="panel rg-panel" id="rgStepsPanel">
+            <div class="panel-title" id="rgStepsTrigger">
+                <span class="title-left">HOW TO DO THE THING</span>
+                <span class="chevron">▼</span>
+            </div>
+            <div class="panel-body">
+                <div class="rg-sheet-slot">
+                    <input type="text" class="rg-slot-label" id="rgStepsLabel1" placeholder="Label (optional)">
+                    <textarea id="rgStepsInput1" rows="4" placeholder="Paste sheet JSON..."></textarea>
+                </div>
+                <div class="rg-sheet-slot">
+                    <input type="text" class="rg-slot-label" id="rgStepsLabel2" placeholder="Label (optional)">
+                    <textarea id="rgStepsInput2" rows="4" placeholder="Paste sheet JSON..."></textarea>
+                </div>
+                <button class="apply-btn" id="rgStepsBuildBtn">Build Steps</button>
+                <div id="rgStepsResults" class="rg-results"></div>
             </div>
         </div>
 
@@ -889,17 +1139,21 @@
             setupCollapsible('checklistTrigger2', 'checklistPanel2');
             setupCollapsible('notesInputTrigger', 'notesInputPanel');
             setupCollapsible('notesOutputTrigger', 'notesOutputPanel');
+            setupCollapsible('rgLookupTrigger', 'rgLookupPanel');
+            setupCollapsible('rgStepsTrigger', 'rgStepsPanel');
+            setupCollapsible('scratchTrigger', 'scratchPanel');
 
             // ============================================================
             //  STATE
             // ============================================================
             const STORAGE_KEY = 'dailyOpsStateV4';
             const NOTES_KEY = 'dailyOpsNotesV3';
+            const SCRATCH_KEY = 'dailyOpsScratchNotesV1';
             const CHECKLIST_ITEMS_KEY_1 = 'dailyOpsChecklistItems1';
             const CHECKLIST_ITEMS_KEY_2 = 'dailyOpsChecklistItems2';
             const OPT_A_KEY = 'dailyOpsOptA';
             const OPT_B_KEY = 'dailyOpsOptB';
-            const SITE_KEY = 'dailyOpsSite';
+            const NUMBER_KEY = 'dailyOpsNumber';
 
             function loadChecklistItems(key) {
                 try {
@@ -981,11 +1235,11 @@
 
             let state = loadState();
 
-            const siteNumberInput = document.getElementById('siteNumberInput');
+            const numberInput = document.getElementById('numberInput');
             const emailSubjectInput = document.getElementById('emailSubjectInput');
-            siteNumberInput.value = localStorage.getItem(SITE_KEY) || '';
-            siteNumberInput.addEventListener('change', () => {
-                localStorage.setItem(SITE_KEY, siteNumberInput.value.trim());
+            numberInput.value = localStorage.getItem(NUMBER_KEY) || '';
+            numberInput.addEventListener('change', () => {
+                localStorage.setItem(NUMBER_KEY, numberInput.value.trim());
             });
 
             // ============================================================
@@ -1237,15 +1491,91 @@
                 if (!text) return;
                 const category = document.getElementById('noteCategory').value;
                 const status = document.getElementById('noteStatus').value;
-                const site = siteNumberInput.value.trim();
+                const num = numberInput.value.trim();
                 const emailSubject = emailSubjectInput.value.trim();
                 const time = formatTimeCT();
-                if (site) localStorage.setItem(SITE_KEY, site);
-                notes.push({ id: Date.now(), a: category, b: status, c: text, d: time, e: site, f: emailSubject });
+                if (num) localStorage.setItem(NUMBER_KEY, num);
+                notes.push({ id: Date.now(), a: category, b: status, c: text, d: time, e: num, f: emailSubject });
                 localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
                 document.getElementById('noteText').value = '';
                 emailSubjectInput.value = '';
                 updateNotesJsonDisplay();
+            });
+
+            document.getElementById('notesClearBtn').addEventListener('click', () => {
+                if (!notes.length) return;
+                if (!confirm(`Clear all ${notes.length} logged note${notes.length === 1 ? '' : 's'}? This can't be undone.`)) return;
+                notes = [];
+                localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+                updateNotesJsonDisplay();
+            });
+
+            // ============================================================
+            //  SCRATCH NOTES — personal reminders, separate from turnover notes
+            // ============================================================
+            let scratchNotes = [];
+            try { scratchNotes = JSON.parse(localStorage.getItem(SCRATCH_KEY) || '[]'); } catch (e) { scratchNotes = []; }
+            const scratchListEl = document.getElementById('scratchList');
+            const scratchCountEl = document.getElementById('scratchCount');
+            const scratchInput = document.getElementById('scratchInput');
+
+            function saveScratchNotes() {
+                localStorage.setItem(SCRATCH_KEY, JSON.stringify(scratchNotes));
+            }
+
+            function renderScratchNotes() {
+                scratchListEl.innerHTML = '';
+                scratchCountEl.textContent = scratchNotes.length;
+                if (!scratchNotes.length) {
+                    scratchListEl.innerHTML = '<div class="rg-empty">Nothing.</div>';
+                    return;
+                }
+                scratchNotes.slice().reverse().forEach(n => {
+                    const item = document.createElement('div');
+                    item.className = 'scratch-item';
+                    const textWrap = document.createElement('div');
+                    textWrap.className = 'scratch-item-text';
+                    const timeEl = document.createElement('span');
+                    timeEl.className = 'scratch-item-time';
+                    timeEl.textContent = n.time;
+                    const bodyEl = document.createElement('span');
+                    bodyEl.textContent = n.text;
+                    textWrap.appendChild(timeEl);
+                    textWrap.appendChild(bodyEl);
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'rg-remove-btn';
+                    removeBtn.title = 'Remove';
+                    removeBtn.textContent = '×';
+                    removeBtn.addEventListener('click', () => {
+                        scratchNotes = scratchNotes.filter(x => x.id !== n.id);
+                        saveScratchNotes();
+                        renderScratchNotes();
+                    });
+                    item.appendChild(textWrap);
+                    item.appendChild(removeBtn);
+                    scratchListEl.appendChild(item);
+                });
+            }
+
+            function addScratchNote() {
+                const text = scratchInput.value.trim();
+                if (!text) return;
+                scratchNotes.push({ id: Date.now(), text: text, time: formatTimeCT() });
+                saveScratchNotes();
+                scratchInput.value = '';
+                renderScratchNotes();
+            }
+
+            document.getElementById('scratchAddBtn').addEventListener('click', addScratchNote);
+            scratchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') addScratchNote();
+            });
+            document.getElementById('scratchClearBtn').addEventListener('click', () => {
+                if (!scratchNotes.length) return;
+                if (!confirm(`Clear all ${scratchNotes.length} scratch note${scratchNotes.length === 1 ? '' : 's'}? This can't be undone.`)) return;
+                scratchNotes = [];
+                saveScratchNotes();
+                renderScratchNotes();
             });
 
             // ============================================================
@@ -1272,6 +1602,216 @@
             });
 
             // ============================================================
+            //  LOOKUP  (in-memory only — never persisted,
+            //  never written to localStorage, nothing sent anywhere)
+            // ============================================================
+            let rgSlotSeq = 0;
+            const rgLookupSlotsEl = document.getElementById('rgLookupSlots');
+
+            function addRgLookupSlot() {
+                rgSlotSeq++;
+                const wrap = document.createElement('div');
+                wrap.className = 'rg-sheet-slot';
+                wrap.innerHTML =
+                    '<div class="rg-slot-row">' +
+                    '<input type="text" class="rg-slot-label" placeholder="Label (optional)">' +
+                    '<button class="rg-remove-btn" title="Remove this sheet">×</button>' +
+                    '</div>' +
+                    '<textarea rows="4" placeholder="Paste sheet JSON..."></textarea>' +
+                    '<div class="rg-error" style="display:none;"></div>';
+                wrap.querySelector('.rg-remove-btn').addEventListener('click', () => {
+                    wrap.remove();
+                    updateRgSheetCount();
+                });
+                rgLookupSlotsEl.appendChild(wrap);
+                updateRgSheetCount();
+            }
+
+            function updateRgSheetCount() {
+                const n = rgLookupSlotsEl.querySelectorAll('.rg-sheet-slot').length;
+                document.getElementById('rgLookupSheetCount').textContent = `${n} sheet${n === 1 ? '' : 's'}`;
+            }
+
+            document.getElementById('rgLookupAddSlot').addEventListener('click', addRgLookupSlot);
+
+            function normalizeRgSheets(parsed) {
+                let list = [];
+                if (Array.isArray(parsed)) {
+                    list = parsed;
+                } else if (parsed && Array.isArray(parsed.sections)) {
+                    list = parsed.sections;
+                } else if (parsed && Array.isArray(parsed.rows)) {
+                    list = [parsed];
+                }
+                return list.filter(s => s && Array.isArray(s.rows) && s.rows.length);
+            }
+
+            function getHeaderRow(rows) {
+                return rows.reduce((min, r) => (r.row < min.row ? r : min), rows[0]);
+            }
+
+            function appendResultField(card, label, val) {
+                if (val === '' || val === null || val === undefined) return;
+                const field = document.createElement('div');
+                field.className = 'rg-result-field';
+                const labelSpan = document.createElement('span');
+                labelSpan.className = 'rg-field-label';
+                labelSpan.textContent = label + ':';
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'rg-field-value';
+                valueSpan.textContent = ' ' + String(val);
+                field.appendChild(labelSpan);
+                field.appendChild(valueSpan);
+                card.appendChild(field);
+            }
+
+            function runRgSearch() {
+                const term = document.getElementById('rgNumberSearch').value.trim();
+                const resultsEl = document.getElementById('rgLookupResults');
+                resultsEl.innerHTML = '';
+                if (!term) {
+                    resultsEl.innerHTML = '<div class="rg-empty">Enter a number to search.</div>';
+                    return;
+                }
+                const slots = Array.from(rgLookupSlotsEl.querySelectorAll('.rg-sheet-slot'));
+                const matches = [];
+                let anyParsed = false;
+
+                slots.forEach(slot => {
+                    const labelInput = slot.querySelector('.rg-slot-label');
+                    const textarea = slot.querySelector('textarea');
+                    const errEl = slot.querySelector('.rg-error');
+                    errEl.style.display = 'none';
+                    const raw = textarea.value.trim();
+                    if (!raw) return;
+                    let parsed;
+                    try {
+                        parsed = JSON.parse(raw);
+                    } catch (e) {
+                        errEl.textContent = 'Could not parse this as JSON.';
+                        errEl.style.display = '';
+                        return;
+                    }
+                    const sheets = normalizeRgSheets(parsed);
+                    if (!sheets.length) {
+                        errEl.textContent = 'No recognizable sheet/rows structure found.';
+                        errEl.style.display = '';
+                        return;
+                    }
+                    anyParsed = true;
+                    sheets.forEach(sheet => {
+                        const headerRow = getHeaderRow(sheet.rows);
+                        const headers = (headerRow && headerRow.values) || {};
+                        const dataRows = sheet.rows.filter(r => r !== headerRow);
+                        const sheetLabel = (labelInput.value.trim()) || sheet.sheet || 'Untitled sheet';
+                        dataRows.forEach(r => {
+                            const vals = r.values || {};
+                            const hit = Object.values(vals).some(v =>
+                                String(v).trim().toLowerCase() === term.toLowerCase());
+                            if (hit) matches.push({ sheetLabel, headers, values: vals });
+                        });
+                    });
+                });
+
+                if (!anyParsed && !matches.length) {
+                    resultsEl.innerHTML = '<div class="rg-empty">Paste at least one sheet\'s JSON above, then search.</div>';
+                    return;
+                }
+                if (!matches.length) {
+                    resultsEl.innerHTML = `<div class="rg-empty">No exact match for "${term}".</div>`;
+                    return;
+                }
+                matches.forEach(m => {
+                    const card = document.createElement('div');
+                    card.className = 'rg-result-card';
+                    const title = document.createElement('div');
+                    title.className = 'rg-result-title';
+                    title.textContent = m.sheetLabel;
+                    card.appendChild(title);
+                    Object.keys(m.values).forEach(colKey => {
+                        appendResultField(card, m.headers[colKey] || colKey, m.values[colKey]);
+                    });
+                    resultsEl.appendChild(card);
+                });
+            }
+
+            document.getElementById('rgSearchBtn').addEventListener('click', runRgSearch);
+            document.getElementById('rgNumberSearch').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') runRgSearch();
+            });
+
+            // ============================================================
+            //  REFERENCE STEPS  (in-memory only)
+            // ============================================================
+            function buildRgSteps() {
+                const resultsEl = document.getElementById('rgStepsResults');
+                resultsEl.innerHTML = '';
+                const slots = [
+                    { label: document.getElementById('rgStepsLabel1'), input: document.getElementById('rgStepsInput1') },
+                    { label: document.getElementById('rgStepsLabel2'), input: document.getElementById('rgStepsInput2') }
+                ];
+                let rendered = 0;
+                slots.forEach((slot, idx) => {
+                    const raw = slot.input.value.trim();
+                    if (!raw) return;
+                    let parsed;
+                    try {
+                        parsed = JSON.parse(raw);
+                    } catch (e) {
+                        const err = document.createElement('div');
+                        err.className = 'rg-error';
+                        err.textContent = `Box ${idx + 1}: could not parse this as JSON.`;
+                        resultsEl.appendChild(err);
+                        return;
+                    }
+                    const sheets = normalizeRgSheets(parsed);
+                    if (!sheets.length) {
+                        const err = document.createElement('div');
+                        err.className = 'rg-error';
+                        err.textContent = `Box ${idx + 1}: no recognizable sheet/rows structure found.`;
+                        resultsEl.appendChild(err);
+                        return;
+                    }
+                    sheets.forEach(sheet => {
+                        const sheetLabel = (slot.label.value.trim()) || sheet.sheet || `Sheet ${idx + 1}`;
+                        const sortedRows = sheet.rows.slice().sort((a, b) => a.row - b.row);
+                        const lines = sortedRows.map(r => {
+                            const vals = r.values || {};
+                            const colKeys = Object.keys(vals).sort((a, b) => {
+                                const na = parseInt(a.replace(/\D/g, ''), 10) || 0;
+                                const nb = parseInt(b.replace(/\D/g, ''), 10) || 0;
+                                return na - nb;
+                            });
+                            return colKeys.map(k => vals[k]).filter(v => v !== '' && v !== null && v !== undefined)
+                                .join(' — ');
+                        }).filter(line => line.trim().length);
+
+                        const block = document.createElement('div');
+                        block.className = 'rg-steps-block';
+                        const title = document.createElement('div');
+                        title.className = 'rg-result-title';
+                        title.textContent = sheetLabel;
+                        block.appendChild(title);
+                        const ol = document.createElement('ol');
+                        ol.className = 'rg-steps-list';
+                        lines.forEach(line => {
+                            const li = document.createElement('li');
+                            li.textContent = line;
+                            ol.appendChild(li);
+                        });
+                        block.appendChild(ol);
+                        resultsEl.appendChild(block);
+                        rendered++;
+                    });
+                });
+                if (!rendered && !resultsEl.children.length) {
+                    resultsEl.innerHTML = '<div class="rg-empty">Paste at least one sheet\'s JSON above, then build.</div>';
+                }
+            }
+
+            document.getElementById('rgStepsBuildBtn').addEventListener('click', buildRgSteps);
+
+            // ============================================================
             //  INIT
             // ============================================================
             buildDisplayMap();
@@ -1286,6 +1826,9 @@
             toggleChecklistSetup(1, checklistItems[1].length === 0);
             toggleChecklistSetup(2, checklistItems[2].length === 0);
             toggleDropdownSetup(!(optA.length && optB.length));
+            addRgLookupSlot();
+            addRgLookupSlot();
+            renderScratchNotes();
         })();
     </script>
 </body>
